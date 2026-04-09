@@ -15,6 +15,7 @@ import sys
 from collections.abc import MutableMapping
 from enum import Enum
 from functools import lru_cache, partial
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import docker
@@ -1207,6 +1208,11 @@ def main(argv=None):
         # check that config exists and is readable
         with open(args.config):
             pass
+        config_path = Path(args.config)
+        # if config file is anything but a basename, chdir to parent
+        # so that paths resolve relative to config file
+        if config_path.name != args.config:
+            os.chdir(config_path.parent)
 
     if args.reset:
         # reset conflicts with everything except the configuration file
